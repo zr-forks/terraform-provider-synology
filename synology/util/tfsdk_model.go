@@ -1,6 +1,7 @@
 package util
 
 import (
+	"context"
 	"fmt"
 	"reflect"
 	"strings"
@@ -239,11 +240,21 @@ func mapValue(v reflect.Value) (attr.Value, error) {
 
 		if vK == reflect.Ptr || vK == reflect.Interface {
 			iv = iv.Elem()
+			if !iv.IsValid() {
+				attrValues[k.String()] = types.StringNull()
+				continue
+			}
 			vT = iv.Type()
 			vK = vT.Kind()
 		}
 
 		switch vK {
+		case reflect.Map:
+			embAttrValues, err := mapValue(iv)
+			if err != nil {
+				return nil, err
+			}
+			attrValues[k.String()] = embAttrValues
 		case reflect.String:
 			attrValues[k.String()] = types.StringValue(iv.String())
 		case reflect.Int64, reflect.Int, reflect.Int32, reflect.Int16, reflect.Int8:
@@ -278,6 +289,15 @@ func mapValue(v reflect.Value) (attr.Value, error) {
 		return nil, err
 	}
 	if objectType, ok := attrType.(types.ObjectType); ok {
+		// Attributes declared DynamicType (heterogeneous nested maps) only
+		// accept DynamicValue wrappers, not the concrete value directly.
+		for name, at := range objectType.AttributeTypes() {
+			if at.Equal(types.DynamicType) {
+				if val, ok := attrValues[name]; ok && !val.Type(context.Background()).Equal(types.DynamicType) {
+					attrValues[name] = types.DynamicValue(val)
+				}
+			}
+		}
 		return types.ObjectValueMust(objectType.AttributeTypes(), attrValues), nil
 	} else {
 		return nil, fmt.Errorf("unsupported type %T", attrType)

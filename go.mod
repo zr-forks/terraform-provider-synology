@@ -229,4 +229,4 @@ require (
 
 tool github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs
 
-replace github.com/synology-community/go-synology => github.com/TMAtwood/go-synology v0.1.12-fcg.5
+replace github.com/synology-community/go-synology => github.com/zr-forks/go-synology v0.1.12-fcg.8.0.20261126064927-2628339c6980
