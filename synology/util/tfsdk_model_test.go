@@ -146,3 +146,54 @@ func TestGetValue(t *testing.T) {
 		})
 	}
 }
+
+// DSM 6.2 storage load_info replies contain heterogeneous nested maps
+// (env, can_do, vspace_can_do, ...). These used to panic in mapValue:
+// nested maps were dropped (missing attribute) and, once included, their
+// concrete Object values were rejected by DynamicType attributes.
+func TestGetValue_NestedMaps(t *testing.T) {
+	in := map[string]any{
+		"name": "pool",
+		"env": map[string]any{
+			"data_scrubbing": map[string]any{
+				"sche_enabled": "true",
+				"sche_status":  "idle",
+			},
+			"isns": map[string]any{
+				"enabled": true,
+				"address": "10.0.0.1",
+			},
+		},
+		"can_do": map[string]any{
+			"delete": true,
+		},
+		"disks": []any{"sda", "sdb"},
+		"empty": nil,
+	}
+
+	v, err := GetValue(in)
+	if err != nil {
+		t.Fatalf("GetValue: %v", err)
+	}
+	obj, ok := v.(types.Object)
+	if !ok {
+		t.Fatalf("got %T, want types.Object", v)
+	}
+	attrs := obj.Attributes()
+	for _, key := range []string{"name", "env", "can_do", "disks"} {
+		if _, ok := attrs[key]; !ok {
+			t.Errorf("attribute %q missing from result", key)
+		}
+	}
+	// nested map must be preserved as a Dynamic value carrying an Object
+	env, ok := attrs["env"].(types.Dynamic)
+	if !ok {
+		t.Fatalf("env has type %T, want types.Dynamic", attrs["env"])
+	}
+	inner, ok := env.UnderlyingValue().(types.Object)
+	if !ok {
+		t.Errorf("env inner value has type %T, want types.Object", env.UnderlyingValue())
+	} else if _, ok := inner.Attributes()["data_scrubbing"]; !ok {
+		t.Error("env.data_scrubbing missing")
+	}
+}

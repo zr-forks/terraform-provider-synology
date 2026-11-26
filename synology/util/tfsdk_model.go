@@ -63,6 +63,10 @@ func mapType(v reflect.Value) (attr.Type, error) {
 
 		if (vK == reflect.Ptr) || (vK == reflect.Interface) {
 			iv = iv.Elem()
+			if !iv.IsValid() {
+				attrTypes[k.String()] = types.StringType
+				continue
+			}
 			vT = iv.Type()
 			vK = vT.Kind()
 		}
