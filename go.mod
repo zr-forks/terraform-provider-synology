@@ -6,7 +6,7 @@ require (
 	github.com/99designs/keyring v1.2.2
 	github.com/compose-spec/compose-go/v2 v2.17.0
 	github.com/distribution/reference v0.6.0
-	github.com/docker/compose/v2 v2.40.3
+	github.com/docker/compose/v2 v2.33.1
 	github.com/docker/go-connections v0.8.2
 	github.com/docker/go-units v0.5.0
 	github.com/go-viper/mapstructure/v2 v2.5.0
@@ -25,7 +25,7 @@ require (
 	github.com/subpop/go-ini v0.1.5
 	github.com/synology-community/go-synology v0.1.12-0.20260407222905-83ae2f703b1c
 	github.com/testcontainers/testcontainers-go v0.45.0
-	github.com/testcontainers/testcontainers-go/modules/compose v0.45.0
+	github.com/testcontainers/testcontainers-go/modules/compose v0.35.0
 	github.com/tredoe/osutil v1.5.0
 	golang.org/x/sync v0.25.0
 	gopkg.in/yaml.v3 v3.0.1
@@ -70,10 +70,10 @@ require (
 	github.com/containerd/typeurl/v2 v2.3.0 // indirect
 	github.com/cpuguy83/dockercfg v0.3.2 // indirect
 	github.com/danieljoos/wincred v1.2.3 // indirect
-	github.com/docker/buildx v0.35.0 // indirect
+	github.com/docker/buildx v0.21.3 // indirect
 	github.com/docker/cli v29.10.0+incompatible // indirect
 	github.com/docker/compose/v5 v5.8.0 // indirect
-	github.com/docker/docker v28.5.2+incompatible // indirect
+	github.com/docker/docker v28.0.0+incompatible // indirect
 	github.com/docker/docker-credential-helpers v0.9.9 // indirect
 	github.com/docker/secrets-engine/client v0.2.2 // indirect
 	github.com/docker/secrets-engine/x v0.8.5 // indirect
